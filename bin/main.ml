@@ -5,8 +5,8 @@ let () =
   let prompt () =
     print_string "> ";
     flush stdout;
-    Parser.parse_expression parser
-    |> Parser.string_of_expression
+    Parser.parse_statement parser
+    |> Parser.string_of_statement
     |> print_endline in
   print_endline "primrec v1";
   while true do

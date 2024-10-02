@@ -3,6 +3,8 @@ val string_of_expression : expression -> string
 type statement
 val string_of_statement : statement -> string
 
+type context
+
 exception SyntaxError of string
 
 type stream =

@@ -22,8 +22,12 @@ let rec string_of_expression = function
 
 type statement =
   | Bind of string * expression
+  | Compute of expression
 let string_of_statement = function
   | Bind (s, e) -> "bind " ^ s ^ " = " ^ string_of_expression e
+  | Compute e -> string_of_expression e
+
+type context = (string, expression) Hashtbl.t
 
 exception SyntaxError of string
 
@@ -121,7 +125,20 @@ let parse_expression stream =
   in
   parse_expression_inner ()
 
-let parse_statement _ = Bind ("aled", Int 1)
+let parse_statement stream =
+  consume_whitespace stream;
+  match parse_identifier stream with
+    | "bind" -> 
+        let id = consume_whitespace stream; parse_identifier stream in
+        let () = 
+          consume_whitespace stream;
+          let c = read_char stream in
+          if c <> '=' then raise (SyntaxError "Missing binding = operator")
+        in
+        let expr = parse_expression stream in
+        Bind (id, expr)
+    | "compute" -> Compute (parse_expression stream)
+    | _ -> raise (SyntaxError ("Statements should begin with compute or bind"))
 
 (* 
 proj (succ 2) (succ (succ 4)) 2 3 5
