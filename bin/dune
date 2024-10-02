@@ -1,0 +1,4 @@
+(executable
+ (public_name primrec)
+ (name main)
+ (libraries primrec))
